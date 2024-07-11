@@ -1,0 +1,4 @@
+#table-card-title{display: flex;justify-content: space-between;align-items: center;}
+.sidebar-logo{max-width: 3rem;}
+.count-link:hover{text-decoration: none;}
+.btn .fas{color: #fff !important;}
