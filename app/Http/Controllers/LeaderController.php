@@ -18,23 +18,43 @@ class LeaderController extends Controller
         $role = Role::findOrFail($roleId);
         if ($request->ajax()) {
 
+            $query = User::with('parent')
+            ->role($role->name)
+            ->orderBy('id', 'desc');
+
             if (Auth::user()->hasRole('Leader')) {
-                $user = Auth::user();
-                $userId = $user->id;
-                // $data = User::select('*')->role($role->name)->where('parent_id',$userId)->orderBy('id', 'desc')->get();
-                $data = User::with('parent')
-                ->role($role->name)
-                ->when(Auth::user()->hasRole('Leader'), function ($query) {
-                    $userId = Auth::id();
-                    return $query->where('parent_id', $userId);
-                })
-                ->orderBy('id', 'desc')
-                ->get();
-            }else{
-
-                $data = User::with('parent')->select('*')->role($role->name)->orderBy('id', 'desc')->get();
-
+                $userId = Auth::id();
+                $query->where('parent_id', $userId);
             }
+
+            if ($request->has('leader_name') && !empty($request->leader_name)) {
+                $leaderName = $request->leader_name;
+                $query->where('name', 'like', "%{$leaderName}%");
+            }
+            $data = $query->get();
+
+
+            // if (Auth::user()->hasRole('Leader')) {
+            //     $user = Auth::user();
+            //     $userId = $user->id;
+            //     // $data = User::select('*')->role($role->name)->where('parent_id',$userId)->orderBy('id', 'desc')->get();
+            //     $data = User::with('parent')
+            //     ->role($role->name)
+            //     ->when(Auth::user()->hasRole('Leader'), function ($query) {
+            //         $userId = Auth::id();
+            //         return $query->where('parent_id', $userId);
+            //     })
+            //     ->orderBy('id', 'desc')
+            //     ->get();
+
+                
+
+
+            // }else{
+
+            //     $data = User::with('parent')->select('*')->role($role->name)->orderBy('id', 'desc')->get();
+
+            // }
             
  
 

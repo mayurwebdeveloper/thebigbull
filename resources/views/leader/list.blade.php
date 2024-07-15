@@ -66,6 +66,10 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="form-group">
+            <label for="filter-leader-name">Filter by Leader Name:</label>
+            <input type="text" id="filter-leader-name" class="form-control" placeholder="Enter Leader Name">
+        </div>
         <div class="table-responsive">
         <table class="table table-bordered" id="userTable" width="100%" cellspacing="0">
             <thead>
@@ -191,7 +195,12 @@
     
         var table = $('#userTable').DataTable({
             serverSide: true,
-            ajax: "{{ route('leader') }}",
+            ajax: {
+                url: "{{ route('leader') }}",
+                data: function(d) {
+                    d.leader_name = $('#filter-leader-name').val(); // Add filter data to the AJAX request
+                }
+            },
             columns: [
                 { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
                 { data: 'name', name: 'name' },
@@ -217,6 +226,10 @@
                 @endcan
             ],
             // "order": [[0, "desc"]]
+        });
+         // Event listener for the filter input
+        $('#filter-leader-name').on('keyup', function() {
+            table.ajax.reload(); // Reload the table data with the new filter
         });
     
         // Handle the "Check All" checkbox

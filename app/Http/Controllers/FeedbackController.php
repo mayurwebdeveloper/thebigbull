@@ -9,7 +9,7 @@ class FeedbackController extends Controller
 {
     public function create()
     {
-        return view('feedback.create');
+        return view('feedback.form');
     }
 
     public function store(Request $request)

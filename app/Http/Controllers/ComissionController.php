@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Comission;
+use App\Models\Commission;
+use Illuminate\Support\Facades\DB;
+
 class ComissionController extends Controller
 {
     /**
@@ -11,6 +13,22 @@ class ComissionController extends Controller
      */
     public function index()
     {
+        $monthlyCommissions = Commission::select(
+            'users.name as username', // Assuming 'name' is the column for username in the users table
+            'commissions.user_id',
+            DB::raw('YEAR(commissions.commission_date) as year'),
+            DB::raw('MONTH(commissions.commission_date) as month'),
+            DB::raw('SUM(commissions.commission_amount) as total_commission')
+        )
+        ->leftJoin('users', 'users.id', '=', 'commissions.user_id')
+        ->groupBy('users.name', 'commissions.user_id', 'year', 'month')
+        ->orderBy('year', 'desc')
+        ->orderBy('month', 'desc')
+        ->get();
+
+        
+        return view('commissions.index', compact('monthlyCommissions'));
+
         //
     }
 

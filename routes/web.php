@@ -11,6 +11,7 @@ use App\Http\Controllers\LeaderController;
 use App\Http\Controllers\InvestmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\ComissionController;
 
 
 Route::get('/', function () {
@@ -112,6 +113,11 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/update',[InvestmentController::class,'update'])->name('update-investment')->middleware('permission:edit investment');
         Route::get('/show/{id}',[InvestmentController::class,'show'])->name('view-investment');
+    });
+
+    Route::prefix('/comission')->middleware('permission:view comission')->group(function () {
+        Route::get('/',[ComissionController::class,'index'])->name('comission');
+        
     });
 
     // Quiz Module
