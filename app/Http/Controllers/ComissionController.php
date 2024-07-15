@@ -11,10 +11,28 @@ class ComissionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $monthlyCommissions = Commission::select(
-            'users.name as username', // Assuming 'name' is the column for username in the users table
+        $year = $request->input('year');
+        $month = $request->input('month');
+        $username = $request->input('username');
+        // $monthlyCommissions = Commission::select(
+        //     'users.name as username', // Assuming 'name' is the column for username in the users table
+        //     'commissions.user_id',
+        //     DB::raw('YEAR(commissions.commission_date) as year'),
+        //     DB::raw('MONTH(commissions.commission_date) as month'),
+        //     DB::raw('SUM(commissions.commission_amount) as total_commission')
+        // )
+        // ->leftJoin('users', 'users.id', '=', 'commissions.user_id')
+        // ->groupBy('users.name', 'commissions.user_id', 'year', 'month')
+        // ->orderBy('year', 'desc')
+        // ->orderBy('month', 'desc')
+        // ->get();
+
+        
+        // return view('commissions.index', compact('monthlyCommissions'));
+        $query = Commission::select(
+            'users.name as username',
             'commissions.user_id',
             DB::raw('YEAR(commissions.commission_date) as year'),
             DB::raw('MONTH(commissions.commission_date) as month'),
@@ -23,11 +41,24 @@ class ComissionController extends Controller
         ->leftJoin('users', 'users.id', '=', 'commissions.user_id')
         ->groupBy('users.name', 'commissions.user_id', 'year', 'month')
         ->orderBy('year', 'desc')
-        ->orderBy('month', 'desc')
-        ->get();
+        ->orderBy('month', 'desc');
 
-        
-        return view('commissions.index', compact('monthlyCommissions'));
+    // Apply filters if present
+    if ($year) {
+        $query->having('year', '=', $year);
+    }
+    if ($month) {
+        $query->having('month', '=', $month);
+    }
+    if ($username) {
+        $query->having('username', 'like', '%' . $username . '%');
+    }
+
+    // Get the filtered results
+    $monthlyCommissions = $query->get();
+
+    return view('commissions.index', compact('monthlyCommissions', 'year', 'month', 'username'));
+
 
         //
     }

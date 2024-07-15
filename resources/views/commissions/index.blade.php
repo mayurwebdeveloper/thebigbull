@@ -25,6 +25,22 @@
         </div>
     </div>
     <div class="card-body">
+        <form method="GET" action="{{ route('comission') }}" class="mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="text" name="username" class="form-control" placeholder="Username" value="{{ request('username') }}">
+                </div>
+                <div class="col-md-3">
+                    <input type="number" name="year" class="form-control" placeholder="Year" value="{{ request('year') }}">
+                </div>
+                <div class="col-md-3">
+                    <input type="number" name="month" class="form-control" placeholder="Month" value="{{ request('month') }}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
+            </div>
+        </form>
         <div class="table-responsive">
         <table class="table table-bordered" id="userTable" width="100%" cellspacing="0">
             <thead>
