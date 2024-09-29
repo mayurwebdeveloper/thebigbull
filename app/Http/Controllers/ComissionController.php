@@ -66,8 +66,29 @@ class ComissionController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function userwisetotal(Request $request)
     {
+
+        $username = $request->input('username');
+
+        $query = Commission::select(
+            'users.name as username',
+            'commissions.user_id',
+            DB::raw('SUM(commissions.commission_amount) as total_commission')
+        )
+        ->leftJoin('users', 'users.id', '=', 'commissions.user_id')
+        ->groupBy('users.name', 'commissions.user_id')
+        ->orderBy('total_commission', 'desc');
+
+        // Apply filters if present
+        if ($username) {
+            $query->having('username', 'like', '%' . $username . '%');
+        }
+
+        // Get the filtered results
+        $totalCommissions = $query->get();
+        return view('commissions.userwisetotal', compact('totalCommissions'));
+
         //
     }
 

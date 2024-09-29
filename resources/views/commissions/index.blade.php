@@ -60,9 +60,9 @@
             <tbody>
                 @foreach ($monthlyCommissions as $comission)
                 <tr>
-                    <th>{{ $comission->username }}</th>
-                    <th>{{ $comission->total_commission }}</th>
-                    <th>{{ $comission->month }} / {{ $comission->year }}</th>
+                    <td>{{ $comission->username }}</td>
+                    <td>{{ $comission->total_commission }}</td>
+                    <td>{{ $comission->month }} / {{ $comission->year }}</td>
                 </tr>
             @endforeach
             </tbody>

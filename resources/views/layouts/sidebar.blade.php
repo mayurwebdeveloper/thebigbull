@@ -69,6 +69,23 @@
         </li>
         @endif
 
+        @if (\App\Helpers\Helper::userAccessOr('view comission'))
+        <li class="nav-group">
+            <a class="nav-link nav-group-toggle" href="#">
+                <svg class="nav-icon">
+                    <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg#cil-book') }}"></use>
+                </svg> Comission
+            </a>
+            <ul class="nav-group-items compact">                
+                @can('view comission')
+                <li class="nav-item"><a class="nav-link" href="{{ route('comission') }}"><span class="nav-icon"><span class="nav-icon-bullet"></span></span> Comission</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('userwisetotal') }}"><span class="nav-icon"><span class="nav-icon-bullet"></span></span> User Wise Total Comission</a></li>
+                
+                @endcan
+            </ul>
+        </li>
+        @endif
+
 
 
         <!-- <li class="nav-item">
