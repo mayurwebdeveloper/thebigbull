@@ -118,7 +118,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('/comission')->middleware('permission:view comission')->group(function () {
         Route::get('/',[ComissionController::class,'index'])->name('comission');
         Route::get('/userwisetotal',[ComissionController::class,'userwisetotal'])->name('userwisetotal');
-        
+        Route::get('/subleader/{id}',[ComissionController::class,'subleader'])->name('subleader');
     });
 
     // Quiz Module

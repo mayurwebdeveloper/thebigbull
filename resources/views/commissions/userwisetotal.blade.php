@@ -43,7 +43,7 @@
                   
                     <th>Leader Name</th>
                     <th>Comission Amount</th>
-                    
+                    <th>View</th>
                 </tr>
               
                 
@@ -56,6 +56,7 @@
                 <tr>
                     <td>{{ $comission->username }}</td>
                     <td>{{ $comission->total_commission }}</td>
+                    <td><a href="{{  route('subleader',['id'=>$comission->user_id]) }}" class="btn btn-primary">View Sub leader</a></td>
                 </tr>
             @endforeach
             </tbody>

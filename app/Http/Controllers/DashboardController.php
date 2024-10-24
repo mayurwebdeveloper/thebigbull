@@ -15,12 +15,26 @@ class DashboardController extends Controller
     public function index()
     {    
 
-        $totalInvestment = Investment::sum('investment_amount');
-        $role = Role::find(3);
+        $loggedInUser = auth()->user();
 
-        // Count the users who have the role
-        $totalUsersWithRole = $role->users()->count();
+        if($loggedInUser->hasRole('Leader')){
+            $totalInvestment = Investment::where('user_id', $loggedInUser->id)->sum('investment_amount');
+$role = Role::find(3);
 
+// Count the users who have the role
+$totalUsersWithRole = $role->users()->where('parent_id', $loggedInUser->id)->count();
+
+
+        }else{
+            $totalInvestment = Investment::sum('investment_amount');
+            $role = Role::find(3);
+    
+            // Count the users who have the role
+            $totalUsersWithRole = $role->users()->count();
+    
+        }
+
+        
 
         return view('dashboard',compact('totalInvestment','totalUsersWithRole'));
     }

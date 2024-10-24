@@ -31,8 +31,48 @@ class InvestmentController extends Controller
 
             }
             
- 
-            $data = Investment::select('*')->with('user')->orderBy('id', 'desc')->get();
+            $loggedInUser = auth()->user();
+
+            if($loggedInUser->hasRole('Leader')){
+                // $data = Investment::select('*')->with('user')->orderBy('id', 'desc')->get();
+                        // $data = Investment::select('*')
+                        // ->with('user') // Load related user data
+                        // ->when($loggedInUser->role_id == 3, function ($query) use ($loggedInUser) {
+                        //     // If logged-in user is a leader, filter investments by their child users
+                        //     return $query->whereHas('user', function ($q) use ($loggedInUser) {
+                        //         $q->where('parent_id', $loggedInUser->id);
+                        //     });
+                        // })
+                        // ->orderBy('id', 'desc')
+                        // ->get();
+                        // $data = Investment::select('investments.*')
+                        //         ->join('users', 'users.id', '=', 'investments.user_id')
+                        //         ->where('users.parent_id', '=', $loggedInUser->id) // Filter by leader's child users
+                        //         ->orderBy('investments.id', 'desc')
+                        //         ->get();
+                        $leader = auth()->user();
+
+                        // Recursive query to get all children and their descendants
+                        $descendantUserIds = User::where('parent_id', $leader->id)
+                            ->orWhereIn('parent_id', function ($query) use ($leader) {
+                                $query->select('id')->from('users')->where('parent_id', $leader->id);
+                            })
+                            ->pluck('id');
+
+                        // Include the leader's own investments if needed
+                        $descendantUserIds[] = $leader->id;
+
+                        // Query to get investment data for the Leader, children, and grandchildren
+                        $data = Investment::whereIn('user_id', $descendantUserIds)
+                            ->orderBy('id', 'desc')
+                            ->get();
+
+
+
+            }else{
+                $data = Investment::select('*')->with('user')->orderBy('id', 'desc')->get();
+            }
+           
             
           
             return Datatables::of($data)
